@@ -1,0 +1,53 @@
+Table Alumnos {
+id_alumno int [pk, increment]
+matricula varchar(20)
+nombre varchar(80)
+apellido_paterno varchar(80)
+apellido_materno varchar(80)
+carrera varchar(100)
+cuatrimestre int
+correo varchar(100)
+telefono varchar(20)
+}
+
+Table Docentes {
+id_docente int [pk, increment]
+numero_empleado varchar(20)
+nombre varchar(80)
+apellido_paterno varchar(80)
+apellido_materno varchar(80)
+correo varchar(100)
+especialidad varchar(100)
+}
+
+Table Materias {
+id_materia int [pk, increment]
+clave_materia varchar(20)
+nombre_materia varchar(100)
+creditos int
+horas_semana int
+}
+
+Table Grupos {
+id_grupo int [pk, increment]
+clave_grupo varchar(20)
+periodo varchar(30)
+aula varchar(30)
+horario varchar(100)
+id_docente int
+id_materia int
+}
+
+Table Inscripciones {
+id_inscripcion int [pk, increment]
+id_alumno int
+id_grupo int
+fecha_inscripcion date
+estatus varchar(30)
+calificacion_final decimal(5,2)
+}
+
+Ref: Grupos.id_docente > Docentes.id_docente
+Ref: Grupos.id_materia > Materias.id_materia
+Ref: Inscripciones.id_alumno > Alumnos.id_alumno
+Ref: Inscripciones.id_grupo > Grupos.id_grupo

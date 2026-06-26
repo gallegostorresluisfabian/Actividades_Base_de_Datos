@@ -1,0 +1,98 @@
+Table Pacientes {
+  id_paciente int [pk, increment]
+  nombre varchar(100) [not null]
+  apellido_paterno varchar(100) [not null]
+  apellido_materno varchar(100)
+  fecha_nacimiento date
+  sexo varchar(20)
+  telefono varchar(20)
+  correo varchar(100)
+  direccion varchar(200)
+}
+
+Table Especialidades {
+  id_especialidad int [pk, increment]
+  nombre varchar(100) [not null]
+  descripcion varchar(200)
+}
+
+Table Medicos {
+  id_medico int [pk, increment]
+  nombre varchar(100) [not null]
+  apellido_paterno varchar(100) [not null]
+  apellido_materno varchar(100)
+  telefono varchar(20)
+  correo varchar(100)
+  id_especialidad int [not null]
+}
+
+Table Citas {
+  id_cita int [pk, increment]
+  fecha date [not null]
+  hora time [not null]
+  motivo_consulta varchar(200)
+  estado varchar(50)
+  id_paciente int [not null]
+  id_medico int [not null]
+}
+
+Table Diagnosticos {
+  id_diagnostico int [pk, increment]
+  descripcion text [not null]
+  fecha_diagnostico date
+  id_cita int [not null]
+}
+
+Table Tratamientos {
+  id_tratamiento int [pk, increment]
+  descripcion text [not null]
+  fecha_inicio date
+  fecha_fin date
+  id_diagnostico int [not null]
+}
+
+Table Medicamentos {
+  id_medicamento int [pk, increment]
+  nombre varchar(100) [not null]
+  descripcion varchar(200)
+  dosis varchar(100)
+}
+
+Table Recetas {
+  id_receta int [pk, increment]
+  fecha_receta date [not null]
+  indicaciones text
+  id_cita int [not null]
+}
+
+Table Receta_Medicamento {
+  id_receta int [not null]
+  id_medicamento int [not null]
+  cantidad varchar(50)
+  frecuencia varchar(100)
+
+  indexes {
+    (id_receta, id_medicamento) [pk]
+  }
+}
+
+Table Signos_Vitales {
+  id_signo int [pk, increment]
+  fecha_registro datetime [not null]
+  peso decimal(5,2)
+  estatura decimal(5,2)
+  temperatura decimal(4,2)
+  presion_arterial varchar(20)
+  frecuencia_cardiaca int
+  id_paciente int [not null]
+}
+
+Ref: Medicos.id_especialidad > Especialidades.id_especialidad
+Ref: Citas.id_paciente > Pacientes.id_paciente
+Ref: Citas.id_medico > Medicos.id_medico
+Ref: Diagnosticos.id_cita > Citas.id_cita
+Ref: Tratamientos.id_diagnostico > Diagnosticos.id_diagnostico
+Ref: Recetas.id_cita > Citas.id_cita
+Ref: Receta_Medicamento.id_receta > Recetas.id_receta
+Ref: Receta_Medicamento.id_medicamento > Medicamentos.id_medicamento
+Ref: Signos_Vitales.id_paciente > Pacientes.id_paciente
