@@ -1,0 +1,204 @@
+Table NivelEducativo {
+  IdNivelEducativo int [pk, increment]
+  Nombre varchar
+  Descripcion varchar
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Grado {
+  IdGrado int [pk, increment]
+  IdNivelEducativo int
+  Nombre varchar
+  Orden int
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table CicloEscolar {
+  IdCicloEscolar int [pk, increment]
+  Nombre varchar
+  FechaInicio date
+  FechaFin date
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Grupo {
+  IdGrupo int [pk, increment]
+  IdGrado int
+  IdCicloEscolar int
+  Nombre varchar
+  Turno varchar
+  Capacidad int
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Alumno {
+  IdAlumno int [pk, increment]
+  Matricula varchar [unique]
+  CURP varchar [unique]
+  Nombre varchar
+  ApellidoPaterno varchar
+  ApellidoMaterno varchar
+  FechaNacimiento date
+  Sexo varchar
+  Telefono varchar
+  Correo varchar
+  Direccion varchar
+  FechaIngreso date
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Tutor {
+  IdTutor int [pk, increment]
+  Nombre varchar
+  ApellidoPaterno varchar
+  ApellidoMaterno varchar
+  Telefono varchar
+  Correo varchar
+  Direccion varchar
+  Parentesco varchar
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table AlumnoTutor {
+  IdAlumnoTutor int [pk, increment]
+  IdAlumno int
+  IdTutor int
+  EsPrincipal boolean
+  PuedeRecoger boolean
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Docente {
+  IdDocente int [pk, increment]
+  NumeroEmpleado varchar [unique]
+  Nombre varchar
+  ApellidoPaterno varchar
+  ApellidoMaterno varchar
+  Telefono varchar
+  Correo varchar
+  Especialidad varchar
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Materia {
+  IdMateria int [pk, increment]
+  Clave varchar [unique]
+  Nombre varchar
+  Descripcion varchar
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table GradoMateria {
+  IdGradoMateria int [pk, increment]
+  IdGrado int
+  IdMateria int
+  HorasSemana int
+  Orden int
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table GrupoMateriaDocente {
+  IdGrupoMateriaDocente int [pk, increment]
+  IdGrupo int
+  IdMateria int
+  IdDocente int
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Inscripcion {
+  IdInscripcion int [pk, increment]
+  IdAlumno int
+  IdGrupo int
+  IdCicloEscolar int
+  FechaInscripcion date
+  Estatus varchar
+  Observaciones text
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table PeriodoEvaluacion {
+  IdPeriodoEvaluacion int [pk, increment]
+  IdCicloEscolar int
+  Nombre varchar
+  FechaInicio date
+  FechaFin date
+  Orden int
+  Activo boolean
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Calificacion {
+  IdCalificacion int [pk, increment]
+  IdInscripcion int
+  IdMateria int
+  IdPeriodoEvaluacion int
+  Calificacion decimal
+  Faltas int
+  Observaciones text
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+Table Asistencia {
+  IdAsistencia int [pk, increment]
+  IdInscripcion int
+  Fecha date
+  Estatus varchar
+  Observaciones text
+  FechaRegistro datetime
+  FechaModificacion datetime
+}
+
+/* RELACIONES */
+
+Ref: Grado.IdNivelEducativo > NivelEducativo.IdNivelEducativo
+
+Ref: Grupo.IdGrado > Grado.IdGrado
+Ref: Grupo.IdCicloEscolar > CicloEscolar.IdCicloEscolar
+
+Ref: AlumnoTutor.IdAlumno > Alumno.IdAlumno
+Ref: AlumnoTutor.IdTutor > Tutor.IdTutor
+
+Ref: GradoMateria.IdGrado > Grado.IdGrado
+Ref: GradoMateria.IdMateria > Materia.IdMateria
+
+Ref: GrupoMateriaDocente.IdGrupo > Grupo.IdGrupo
+Ref: GrupoMateriaDocente.IdMateria > Materia.IdMateria
+Ref: GrupoMateriaDocente.IdDocente > Docente.IdDocente
+
+Ref: Inscripcion.IdAlumno > Alumno.IdAlumno
+Ref: Inscripcion.IdGrupo > Grupo.IdGrupo
+Ref: Inscripcion.IdCicloEscolar > CicloEscolar.IdCicloEscolar
+
+Ref: PeriodoEvaluacion.IdCicloEscolar > CicloEscolar.IdCicloEscolar
+
+Ref: Calificacion.IdInscripcion > Inscripcion.IdInscripcion
+Ref: Calificacion.IdMateria > Materia.IdMateria
+Ref: Calificacion.IdPeriodoEvaluacion > PeriodoEvaluacion.IdPeriodoEvaluacion
+
+Ref: Asistencia.IdInscripcion > Inscripcion.IdInscripcion

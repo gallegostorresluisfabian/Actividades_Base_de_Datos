@@ -1,0 +1,68 @@
+CONSULTA 5:
+SELECT
+    ve.id_vendedor,
+    ve.nombre AS vendedor,
+    s.nombre AS sucursal,
+    COUNT(DISTINCT v.id_venta) AS numero_ventas,
+    SUM(dv.subtotal) AS total_vendido
+FROM Vendedores ve
+INNER JOIN Sucursales s
+    ON ve.id_sucursal = s.id_sucursal
+INNER JOIN Ventas v
+    ON ve.id_vendedor = v.id_vendedor
+INNER JOIN DetalleVenta dv
+    ON v.id_venta = dv.id_venta
+GROUP BY ve.id_vendedor, ve.nombre, s.nombre;
+
+CONSULTA 6:
+SELECT
+    p.id_producto,
+    p.nombre AS producto,
+    c.nombre AS categoria,
+    pr.nombre AS proveedor,
+    p.precio,
+    p.stock
+FROM Productos p
+INNER JOIN Categorias c
+    ON p.id_categoria = c.id_categoria
+INNER JOIN Proveedores pr
+    ON p.id_proveedor = pr.id_proveedor
+WHERE pr.ciudad = 'Ciudad Victoria';
+
+CONSULTA 7: 
+SELECT
+    c.id_categoria,
+    c.nombre AS categoria,
+    SUM(dv.cantidad) AS unidades_vendidas,
+    SUM(dv.subtotal) AS total_vendido
+FROM Categorias c
+INNER JOIN Productos p
+    ON c.id_categoria = p.id_categoria
+INNER JOIN DetalleVenta dv
+    ON p.id_producto = dv.id_producto
+GROUP BY c.id_categoria, c.nombre;
+
+CONSULTA 8:
+SELECT
+    fp.id_forma_pago,
+    fp.nombre AS forma_pago,
+    COUNT(DISTINCT v.id_venta) AS numero_ventas,
+    SUM(dv.subtotal) AS total_vendido
+FROM FormasPago fp
+INNER JOIN Ventas v
+    ON fp.id_forma_pago = v.id_forma_pago
+INNER JOIN DetalleVenta dv
+    ON v.id_venta = dv.id_venta
+GROUP BY fp.id_forma_pago, fp.nombre
+HAVING COUNT(DISTINCT v.id_venta) > 1;
+
+CONSULTA 14:
+SELECT
+    pr.id_proveedor,
+    pr.nombre AS proveedor,
+    COUNT(p.id_producto) AS productos_baja_existencia
+FROM Proveedores pr
+INNER JOIN Productos p
+    ON pr.id_proveedor = p.id_proveedor
+WHERE p.stock <= 10
+GROUP BY pr.id_proveedor, pr.nombre;

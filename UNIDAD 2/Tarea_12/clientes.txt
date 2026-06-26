@@ -1,0 +1,40 @@
+*/ Muestra ventas del cliente y quien se las vende
+SELECT v.id_venta,
+       c.nombre AS cliente,
+       ve.nombre AS vendedor,
+       v.fecha
+FROM Ventas v
+JOIN Clientes c ON v.id_cliente = c.id_cliente
+JOIN Vendedores ve ON v.id_vendedor = ve.id_vendedor;
+
+*/Especifica los detaslles de las ventas con la cantidad de productos y el subtotal
+SELECT dv.id_venta,
+       p.nombre AS producto,
+       dv.cantidad,
+       dv.precio_unitario,
+       dv.subtotal
+FROM DetalleVenta dv
+JOIN Productos p ON dv.id_producto = p.id_producto;
+
+*/Calcula el total de ganancia por cada cliente
+SELECT c.nombre,
+       SUM(dv.subtotal) AS total_comprado
+FROM Clientes c
+JOIN Ventas v ON c.id_cliente = v.id_cliente
+JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+GROUP BY c.nombre;
+
+*/Da las unidades que se vendieron por cada producto
+SELECT p.nombre,
+       SUM(dv.cantidad) AS unidades_vendidas
+FROM Productos p
+JOIN DetalleVenta dv ON p.id_producto = dv.id_producto
+GROUP BY p.nombre;
+
+*/Calcula el total vendido por cada vendedor
+SELECT ve.nombre,
+       SUM(dv.subtotal) AS total_vendido
+FROM Vendedores ve
+JOIN Ventas v ON ve.id_vendedor = v.id_vendedor
+JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+GROUP BY ve.nombre;

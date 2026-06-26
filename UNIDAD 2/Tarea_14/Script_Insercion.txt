@@ -1,0 +1,174 @@
+SELECT v.id_venta,
+      c.nombre AS cliente,
+      ve.nombre AS vendedor,
+      v.fecha,
+      fo.nombre AS formaspago
+
+
+FROM Ventas v
+JOIN Clientes c ON v.id_cliente = c.id_cliente
+JOIN Vendedores ve ON v.id_vendedor = ve.id_vendedor
+JOIN formaspago fo ON v.id_forma_pago = fo.id_forma_pago
+;
+SELECT
+   v.id_venta,
+   v.Fecha,
+   p.Nombre AS Producto,
+   cat.Nombre AS Categoria,
+   dv.Cantidad,
+   dv.PrecioUnitario,
+   dv.Cantidad * dv.PrecioUnitario AS Subtotal
+FROM DetalleVenta dv
+INNER JOIN Ventas v
+ON dv.id_venta = v.id_venta
+INNER JOIN Productos p
+   ON dv.IdProducto = p.IdProducto
+INNER JOIN Categorias cat
+   ON p.IdCategoria = cat.IdCategoria
+ORDER BY v.id_venta, p.Nombre;
+
+SELECT
+   c.id_cliente,
+   c.nombre,
+   SUM(dv.subtotal) AS total_comprado
+FROM Clientes c
+INNER JOIN Ventas v
+   ON c.id_cliente = v.id_cliente
+INNER JOIN DetalleVenta dv
+   ON v.id_venta = dv.id_venta
+GROUP BY c.id_cliente, c.nombre;
+
+SELECT
+   p.id_producto,
+   p.nombre,
+   SUM(dv.cantidad) AS unidades_vendidas
+FROM Productos p
+INNER JOIN DetalleVenta dv
+   ON p.id_producto = dv.id_producto
+GROUP BY p.id_producto, p.nombre;
+
+SELECT
+   ve.id_vendedor,
+   ve.nombre,
+   COUNT(DISTINCT v.id_venta) AS numero_ventas,
+   SUM(dv.subtotal) AS total_vendido
+FROM Vendedores ve
+INNER JOIN Ventas v
+   ON ve.id_vendedor = v.id_vendedor
+INNER JOIN DetalleVenta dv
+   ON v.id_venta = dv.id_venta
+GROUP BY ve.id_vendedor, ve.nombre;
+
+SELECT
+   p.id_producto,
+   p.nombre AS producto,
+   c.nombre AS categoria,
+   pr.nombre AS proveedor,
+   p.precio,
+   p.stock AS existencia
+FROM Productos p
+INNER JOIN Categorias c
+   ON p.id_categoria = c.id_categoria
+INNER JOIN Proveedores pr
+   ON p.id_proveedor = pr.id_proveedor;
+
+SELECT
+   c.id_categoria,
+   c.nombre AS categoria,
+   SUM(dv.subtotal) AS total_vendido
+FROM Categorias c
+INNER JOIN Productos p
+   ON c.id_categoria = p.id_categoria
+INNER JOIN DetalleVenta dv
+   ON p.id_producto = dv.id_producto
+GROUP BY c.id_categoria, c.nombre;
+
+
+SELECT
+   fp.id_forma_pago,
+   fp.nombre AS forma_pago,
+   COUNT(DISTINCT v.id_venta) AS numero_ventas,
+   SUM(dv.subtotal) AS total_vendido
+FROM FormasPago fp
+INNER JOIN Ventas v
+   ON fp.id_forma_pago = v.id_forma_pago
+INNER JOIN DetalleVenta dv
+   ON v.id_venta = dv.id_venta
+GROUP BY fp.id_forma_pago, fp.nombre;
+
+SELECT
+   s.id_sucursal,
+   s.nombre AS sucursal,
+   SUM(dv.subtotal) AS total_vendido
+FROM Sucursales s
+INNER JOIN Vendedores vdr
+   ON s.id_sucursal = vdr.id_sucursal
+INNER JOIN Ventas v
+   ON vdr.id_vendedor = v.id_vendedor
+INNER JOIN DetalleVenta dv
+   ON v.id_venta = dv.id_venta
+GROUP BY s.id_sucursal, s.nombre;
+
+SELECT
+   id_producto,
+   nombre,
+   descripcion,
+   precio,
+   stock
+FROM Productos
+WHERE stock <= 10;
+
+SELECT
+   p.id_producto,
+   p.nombre AS producto,
+   im.id_movimiento,
+   im.tipo_movimiento,
+   im.cantidad,
+   im.fecha,
+   im.observaciones
+FROM InventarioMovimientos im
+INNER JOIN Productos p
+   ON im.id_producto = p.id_producto
+ORDER BY p.nombre, im.fecha;
+
+SELECT
+   p.id_producto,
+   p.nombre AS producto,
+   SUM(CASE
+           WHEN im.tipo_movimiento = 'Entrada'
+           THEN im.cantidad
+           ELSE 0
+       END) AS entradas,
+   SUM(CASE
+           WHEN im.tipo_movimiento = 'Salida'
+           THEN im.cantidad
+           ELSE 0
+       END) AS salidas,
+   SUM(CASE
+           WHEN im.tipo_movimiento = 'Entrada'
+           THEN im.cantidad
+           ELSE -im.cantidad
+       END) AS saldo
+FROM Productos p
+INNER JOIN InventarioMovimientos im
+   ON p.id_producto = im.id_producto
+GROUP BY p.id_producto, p.nombre;
+
+SELECT
+   c.id_cliente,
+   c.nombre,
+   COUNT(v.id_venta) AS numero_compras
+FROM Clientes c
+INNER JOIN Ventas v
+   ON c.id_cliente = v.id_cliente
+GROUP BY c.id_cliente, c.nombre
+HAVING COUNT(v.id_venta) > 1;
+
+SELECT
+   id_producto,
+   nombre,
+   descripcion,
+   precio,
+   stock
+FROM Productos
+WHERE stock > 10;

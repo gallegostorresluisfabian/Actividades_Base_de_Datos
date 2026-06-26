@@ -1,0 +1,28 @@
+SELECT *
+FROM Alumno;
+
+
+SELECT Nombre, Matricula
+FROM Alumno;
+
+
+SELECT
+    a.Nombre AS Alumno,
+    g.Nombre AS Grupo
+FROM Inscripcion i
+JOIN Alumno a ON i.IdAlumno = a.IdAlumno
+JOIN Grupo g ON i.IdGrupo = g.IdGrupo;
+
+
+SELECT
+    Nombre,
+    Especialidad
+FROM Docente;
+
+
+SELECT
+    a.Nombre AS Alumno,
+    t.Nombre AS Tutor
+FROM AlumnoTutor at
+JOIN Alumno a ON at.IdAlumno = a.IdAlumno
+JOIN Tutor t ON at.IdTutor = t.IdTutor;

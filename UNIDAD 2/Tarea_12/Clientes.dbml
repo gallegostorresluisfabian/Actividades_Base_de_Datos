@@ -1,0 +1,43 @@
+Table Clientes {
+  id_cliente int [pk, increment]
+  nombre varchar(100)
+  telefono varchar(15)
+  correo varchar(100)
+}
+
+Table Vendedores {
+  id_vendedor int [pk, increment]
+  nombre varchar(100)
+  telefono varchar(15)
+  correo varchar(100)
+}
+
+Table Productos {
+  id_producto int [pk, increment]
+  nombre varchar(100)
+  descripcion varchar(255)
+  precio decimal(10,2)
+  stock int
+}
+
+Table Ventas {
+  id_venta int [pk, increment]
+  fecha date
+  id_cliente int
+  id_vendedor int
+}
+
+Table DetalleVenta {
+  id_detalle int [pk, increment]
+  id_venta int
+  id_producto int
+  cantidad int
+  precio_unitario decimal(10,2)
+  subtotal decimal(10,2)
+}
+
+Ref: Ventas.id_cliente > Clientes.id_cliente
+Ref: Ventas.id_vendedor > Vendedores.id_vendedor
+
+Ref: DetalleVenta.id_venta > Ventas.id_venta
+Ref: DetalleVenta.id_producto > Productos.id_producto
